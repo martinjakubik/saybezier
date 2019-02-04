@@ -1,0 +1,8 @@
+.DS_Store
+
+saybezier.xcodeproj/project.xcworkspace/xcuserdata/*
+saybezier/saybezier.xcodeproj/xcuserdata/*
+saybezier.xcworkspace/xcuserdata/*
+
+Pods
+Podfile.lock
