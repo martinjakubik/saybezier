@@ -199,7 +199,7 @@ class ViewController: UIViewController {
 
             if let spotNode = self.currentSpotNode {
 
-                self.backgroundNode.addChild(spotNode)
+                self.scene.addChild(spotNode)
 
             }
 
@@ -223,7 +223,7 @@ class ViewController: UIViewController {
 
             os_log("double tap - clearing scene", log:self.log, type:.debug)
             os_log("------------------------", log:self.log, type:.debug)
-            self.backgroundNode.removeAllChildren()
+            self.scene.removeAllChildren()
             self.pathState = .noPath
             os_log("state: %s", log:self.log, type:.debug, self.pathState.description())
 
@@ -275,7 +275,7 @@ class ViewController: UIViewController {
             path.move(to: locationInScene)
             self.paths.append(path)
             let pathNode = makePathNode(path: path)
-            self.backgroundNode.addChild(pathNode)
+            self.scene.addChild(pathNode)
 
             self.pathState = .startPoint
             break
@@ -291,8 +291,8 @@ class ViewController: UIViewController {
             let spot:UIBezierPath = UIBezierPath(arcCenter: locationInScene, radius: spotRadius, startAngle: 0.0, endAngle: CGFloat(2.0 * Double.pi), clockwise: true)
             let spotNode = makeSpotNode(spot: spot)
 
-            self.backgroundNode.addChild(spotNode)
-            self.backgroundNode.addChild(pathNode)
+            self.scene.addChild(spotNode)
+            self.scene.addChild(pathNode)
 
             self.pathState = .endPath
             break
