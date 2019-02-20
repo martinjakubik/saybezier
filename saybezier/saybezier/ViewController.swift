@@ -269,7 +269,7 @@ class ViewController: UIViewController {
         switch self.pathState {
         case .noPath:
 
-            os_log("dropping start path at (scene) x: %f, y: %f (view) x: %f, y: %f", log:self.log, type:.debug, locationInScene.x, locationInScene.y)
+            os_log("dropping start path at (scene) x: %f, y: %f", log:self.log, type:.debug, locationInScene.x, locationInScene.y)
 
             let path:UIBezierPath = UIBezierPath()
             path.move(to: locationInScene)
@@ -288,10 +288,10 @@ class ViewController: UIViewController {
             path.addLine(to: locationInScene)
             let pathNode = makePathNode(path: path)
 
-            let spot:UIBezierPath = UIBezierPath(arcCenter: locationInScene, radius: 25, startAngle: 0.0, endAngle: CGFloat(2.0 * Double.pi), clockwise: true)
-            let shapeNode = makeSpotNode(spot: spot)
+            let spot:UIBezierPath = UIBezierPath(arcCenter: locationInScene, radius: spotRadius, startAngle: 0.0, endAngle: CGFloat(2.0 * Double.pi), clockwise: true)
+            let spotNode = makeSpotNode(spot: spot)
 
-            self.backgroundNode.addChild(shapeNode)
+            self.backgroundNode.addChild(spotNode)
             self.backgroundNode.addChild(pathNode)
 
             self.pathState = .endPath
@@ -315,13 +315,13 @@ class ViewController: UIViewController {
 
         os_log("making spot at (scene) x: %f, y: %f", log:self.log, type:.debug, spot.cgPath.currentPoint.x, spot.cgPath.currentPoint.y)
 
-        let shapeNode = SKShapeNode(path: spot.cgPath)
+        let spotNode = SKShapeNode(path: spot.cgPath)
 
-        shapeNode.strokeColor = UIColor.yellow
-        shapeNode.fillColor = UIColor(red: 0.1, green: 0.1, blue: 0.8, alpha: 0.2)
-        shapeNode.zPosition = self.backgroundNode.zPosition + 1
+        spotNode.strokeColor = UIColor.yellow
+        spotNode.fillColor = UIColor(red: 0.1, green: 0.1, blue: 0.8, alpha: 0.2)
+        spotNode.zPosition = self.backgroundNode.zPosition + 1
 
-        return shapeNode
+        return spotNode
 
     }
 
@@ -355,14 +355,16 @@ class ViewController: UIViewController {
 
         for x in 0 ... sceneWidth {
 
+            let ratio = CGFloat(x) / CGFloat(sceneWidth)
+
             if (x % 50 == 0) {
 
-                let dot = makeDotNode(at: CGPoint(x: CGFloat(x), y: margin), dotSize: .big)
+                let dot = makeDotNode(at: CGPoint(x: CGFloat(x), y: margin), dotSize: .big, order: ratio)
                 self.scene.addChild(dot)
 
             } else if (x % 10 == 0) {
 
-                let dot = makeDotNode(at: CGPoint(x: CGFloat(x), y: margin), dotSize: .small)
+                let dot = makeDotNode(at: CGPoint(x: CGFloat(x), y: margin), dotSize: .small, order: ratio)
                 self.scene.addChild(dot)
 
             }
@@ -371,14 +373,16 @@ class ViewController: UIViewController {
 
         for y in 0 ... sceneHeight {
 
+            let ratio = CGFloat(y) / CGFloat(sceneHeight)
+
             if (y % 50 == 0) {
 
-                let dot = makeDotNode(at: CGPoint(x: margin, y: CGFloat(y)), dotSize: .big)
+                let dot = makeDotNode(at: CGPoint(x: margin, y: CGFloat(y)), dotSize: .big, order: ratio)
                 self.scene.addChild(dot)
 
             } else if (y % 10 == 0) {
 
-                let dot = makeDotNode(at: CGPoint(x: margin, y: CGFloat(y)), dotSize: .small)
+                let dot = makeDotNode(at: CGPoint(x: margin, y: CGFloat(y)), dotSize: .small, order: ratio)
                 self.scene.addChild(dot)
 
             }
@@ -387,11 +391,12 @@ class ViewController: UIViewController {
 
     }
 
-    func makeDotNode(at position:CGPoint, dotSize:DotSize) -> SKShapeNode {
+    func makeDotNode(at position:CGPoint, dotSize:DotSize, order:CGFloat) -> SKShapeNode {
 
         var radius = CGFloat(2)
-        let strokeColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 1.0)
-        var fillColor = UIColor.white
+        let intensity = CGFloat(order)
+        let strokeColor = UIColor(red: 0.0, green: 0.0, blue: 0.0, alpha: 0.0)
+        var fillColor = UIColor(red: intensity, green: 1.0, blue: 1.0, alpha: 1.0)
         var zPosition = self.scene.zPosition + 2
         
         switch dotSize {
