@@ -19,6 +19,19 @@ class ViewController: UIViewController {
 
         case touchUp, firstTouchDown, firstTouchUp, secondTouchDown
 
+        func description() -> String {
+            switch (self) {
+            case .touchUp:
+                return "touchUp"
+            case .firstTouchDown:
+                return "firstTouchDown"
+            case .firstTouchUp:
+                return "firstTouchUp"
+            case .secondTouchDown:
+                return "secondTouchDown"
+            }
+        }
+
     }
 
     enum PathState {
@@ -114,6 +127,8 @@ class ViewController: UIViewController {
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
 
+        os_log("touches began, touch count: %d, tap state: %@", log:self.log, type:.debug, touches.count, self.tapState.description())
+        
         if (touches.count == 1) {
 
             switch (self.tapState) {
@@ -174,14 +189,31 @@ class ViewController: UIViewController {
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
 
-        if (touches.count == 1) {
+        os_log("touches ended, tap state: %@", log:self.log, type:.debug, self.tapState.description())
 
-            if let touch = touches.first {
+        switch self.tapState {
+        case .firstTouchDown:
 
-                let locationInScene = touch.location(in: self.scene)
-                handleSingleTouchUp(locationInScene: locationInScene)
+            self.tapState = .touchUp
+
+            if (touches.count == 1) {
+
+                if let touch = touches.first {
+
+                    let locationInScene = touch.location(in: self.scene)
+                    handleSingleTouchUp(locationInScene: locationInScene)
+
+                }
 
             }
+
+        case .secondTouchDown:
+
+            self.tapState = .touchUp
+
+        default:
+
+            self.tapState = .touchUp
 
         }
 
@@ -195,13 +227,9 @@ class ViewController: UIViewController {
             os_log("single touch down - starting path at (scene) x: %f, y: %f", log:self.log, type:.debug, locationInScene.x, locationInScene.y)
 
             let spot = UIBezierPath(arcCenter: locationInScene, radius: spotRadius, startAngle: 0.0, endAngle: CGFloat(2.0 * Double.pi), clockwise: true)
-            self.currentSpotNode = makeSpotNode(spot: spot)
-
-            if let spotNode = self.currentSpotNode {
-
-                self.scene.addChild(spotNode)
-
-            }
+            let spotNode = makeSpotNode(spot: spot)
+            self.scene.addChild(spotNode)
+            self.currentSpotNode = spotNode
 
             break
 
