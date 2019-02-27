@@ -13,8 +13,6 @@ import os.log
 
 class ViewController: UIViewController {
 
-    var gestureRecognizers:[UIGestureRecognizer] = []
-
     enum TapState {
 
         case touchUp, firstTouchDown, firstTouchUp, secondTouchDown
@@ -62,7 +60,7 @@ class ViewController: UIViewController {
     
     let spotRadius:CGFloat = 25.0
 
-    var paths:[UIBezierPath] = []
+    var paths:[BezPath] = []
     var pathState:PathState = .noPath
 
     let backgroundNode:SKSpriteNode
@@ -239,6 +237,23 @@ class ViewController: UIViewController {
 
         case .endPath:
 
+            for path in self.paths {
+
+                if (locationInScene.x - path.startPoint.x < spotRadius && locationInScene.y - path.startPoint.y < spotRadius) {
+
+                    os_log("single touch down - starting anchor at x: %f, y: %f", log:self.log, type:.debug, locationInScene.x, locationInScene.y)
+                    
+                    let spot:UIBezierPath = UIBezierPath(arcCenter: locationInScene, radius: spotRadius, startAngle: 0.0, endAngle: CGFloat(2.0 * Double.pi), clockwise: true)
+                    let spotNode = makeAnchorNode(spot: spot)
+
+                    self.scene.addChild(spotNode)
+
+                    break
+
+                }
+
+            }
+
             break
 
         }
@@ -264,20 +279,6 @@ class ViewController: UIViewController {
         switch self.pathState {
         case .noPath:
 
-            var currentPoint = CGPoint(x: 0, y: 0)
-            if let spotNode = self.currentSpotNode {
-
-                currentPoint.x = spotNode.position.x + spotRadius
-                currentPoint.y = spotNode.position.y
-
-            }
-
-            let spotNodePosition = CGPoint(x: locationInScene.x - spotRadius, y: locationInScene.y)
-
-            os_log("pan changed - moving path start from (scene) x: %f, y: %f to x: %f, y: %f", log:self.log, type:.debug, currentPoint.x, currentPoint.y, spotNodePosition.x, spotNodePosition.y)
-
-            self.currentSpotNode?.position = spotNodePosition
-
             break
 
         case .startPoint:
@@ -299,8 +300,7 @@ class ViewController: UIViewController {
 
             os_log("dropping start path at (scene) x: %f, y: %f", log:self.log, type:.debug, locationInScene.x, locationInScene.y)
 
-            let path:UIBezierPath = UIBezierPath()
-            path.move(to: locationInScene)
+            let path:BezPath = BezPath(startAt: locationInScene)
             self.paths.append(path)
             let pathNode = makePathNode(path: path)
             self.scene.addChild(pathNode)
@@ -353,9 +353,24 @@ class ViewController: UIViewController {
 
     }
 
-    func makePathNode (path:UIBezierPath) -> SKShapeNode  {
+    func makeAnchorNode (spot:UIBezierPath) -> SKShapeNode {
 
-        let pathNode = SKShapeNode(path: path.cgPath)
+        os_log("making anchor at (scene) x: %f, y: %f", log:self.log, type:.debug, spot.cgPath.currentPoint.x, spot.cgPath.currentPoint.y)
+
+        let anchorNode = SKShapeNode(path: spot.cgPath)
+
+        anchorNode.strokeColor = UIColor.red
+        anchorNode.fillColor = UIColor(red: 0.8, green: 0.1, blue: 0.1, alpha: 0.2)
+        anchorNode.zPosition = self.backgroundNode.zPosition + 2
+
+        return anchorNode
+
+    }
+    
+    func makePathNode (path:BezPath) -> SKShapeNode  {
+
+        let uiBezierPath = path.uiBezierPath
+        let pathNode = SKShapeNode(path: uiBezierPath.cgPath)
         pathNode.strokeColor = UIColor.yellow
         pathNode.zPosition = self.backgroundNode.zPosition + 1
 

@@ -15,6 +15,7 @@
 		5B532AA72202431D00819888 /* saybezierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B532AA62202431D00819888 /* saybezierTests.swift */; };
 		5B532AB22202431D00819888 /* saybezierUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B532AB12202431D00819888 /* saybezierUITests.swift */; };
 		5B532AC422024DE900819888 /* background.png in Resources */ = {isa = PBXBuildFile; fileRef = 5B532AC322024DE900819888 /* background.png */; };
+		5BC9A5012227372A000F3189 /* BezPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BC9A5002227372A000F3189 /* BezPath.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +50,7 @@
 		5B532AB12202431D00819888 /* saybezierUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = saybezierUITests.swift; sourceTree = "<group>"; };
 		5B532AB32202431D00819888 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5B532AC322024DE900819888 /* background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = background.png; sourceTree = "<group>"; };
+		5BC9A5002227372A000F3189 /* BezPath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = BezPath.swift; path = /Users/martin/code/gitwork/saybezier/saybezier/saybezier/BezPath.swift; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -99,6 +101,7 @@
 		5B532A902202431100819888 /* saybezier */ = {
 			isa = PBXGroup;
 			children = (
+				5BC9A5002227372A000F3189 /* BezPath.swift */,
 				5B532AC322024DE900819888 /* background.png */,
 				5B532A912202431100819888 /* AppDelegate.swift */,
 				5B532A932202431100819888 /* ViewController.swift */,
@@ -262,6 +265,7 @@
 			files = (
 				5B532A942202431100819888 /* ViewController.swift in Sources */,
 				5B532A922202431100819888 /* AppDelegate.swift in Sources */,
+				5BC9A5012227372A000F3189 /* BezPath.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
